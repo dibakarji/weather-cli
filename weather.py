@@ -3,6 +3,7 @@
 
 import argparse
 import sys
+from urllib.parse import quote
 
 import requests
 
@@ -14,7 +15,10 @@ FORMATS = {
 
 
 def fetch_weather(location: str, style: str) -> str:
-    url = f"https://wttr.in/{location}"
+    # Quote the location so spaces and reserved characters (/, ?, #,
+    # non-ASCII, ...) are sent as data instead of reshaping the URL.
+    # "+" stays literal: main() already encodes spaces as "+".
+    url = f"https://wttr.in/{quote(location, safe='+')}"
     params = {"format": FORMATS[style], "lang": "en"}
     headers = {"User-Agent": "curl/8.0"}  # wttr.in serves plain text to curl agents
 
